@@ -1,0 +1,22 @@
+<div class="spinner-container" ng-if="isLoading">
+    <div class="spinner-box">
+        <div class="spinner"></div>
+        <div class="spinner-text">Loading...</div>
+    </div>
+</div>
+
+
+<div id="home-page-container" class="content-holder i-font-montserrat i-smoothing i-clearfix">
+    Home page conent
+
+
+    <div id="game-selector">
+
+        {{games.length}}
+        <ul>
+            <li ng-repeat="game in games">
+                {{game.name}}
+            </li>
+        </ul>
+    </div>
+</div>
