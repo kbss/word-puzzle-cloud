@@ -1,22 +1,71 @@
-<div class="spinner-container" ng-if="isLoading">
+<div class="spinner-container" ng-show="isLoading">
     <div class="spinner-box">
         <div class="spinner"></div>
         <div class="spinner-text">Loading...</div>
     </div>
 </div>
 
+<div class="game-container full-width">
+    <div id="game-start-menu" class="full-width" ng-show="menu.start">
+        <div class="row">
+            <button type="button" class="btn btn-default col-xs-12 menu-item" ng-click="selectGame()">
+                Start Game
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-default col-xs-12" ng-click="showScore()">
+                Score
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-default col-xs-12" ng-click="showInfo()">
+                Info
+            </button>
+        </div>
+    </div>
 
-<div id="home-page-container" class="content-holder i-font-montserrat i-smoothing i-clearfix">
-    Home page conent
-
-
-    <div id="game-selector">
-
-        {{games.length}}
+    <div id="game-selector" ng-show="menu.list">
         <ul>
             <li ng-repeat="game in games">
-                {{game.name}}
+
+                <button type="button" class="btn btn-default col-xs-12 menu-item"
+                        data-ng-click="$parent.startGame(game.id)">
+                    {{game.name}}
+                </button>
+
             </li>
         </ul>
+        <button type="button" class="btn btn-default col-xs-12" ng-click="showMenu()">
+            Back
+        </button>
+    </div>
+
+    <div id="game-score" ng-show="menu.score">
+
+        <button type="button" class="btn btn-default col-xs-12" ng-click="showMenu()">
+            Back
+        </button>
+    </div>
+
+    <div id="game-info" ng-show="menu.info">
+        Game based on Google Engine API and angularJS
+        <button type="button" class="btn btn-default col-xs-12" ng-click="showMenu()">
+            Back
+        </button>
+    </div>
+
+    <div id="game" ng-show="menu.game">
+        <table id="game-board">
+            <tr ng-repeat="row in board">
+                <td ng-repeat="cell in row track by $index" class="board-cell" ng-class="{'selected':cell.selected}"
+                    data-ng-click="$parent.selectChar($parent.$index, $index)">
+                    {{cell.char}}
+                </td>
+            </tr>
+        </table>
+        <div ng-repeat="word in game.words">{{word}}</div>
+        <button type="button" class="btn btn-default col-xs-12" ng-click="showMenu()">
+            Back
+        </button>
     </div>
 </div>

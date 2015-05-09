@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author Serhii Kryvtsov
@@ -17,7 +18,7 @@ public class Puzzle {
     private String name;
     private String content;
     private Integer size;
-    private Collection<String> words;
+    private Set<String> words;
 
     public String getName() {
         return name;
@@ -27,11 +28,11 @@ public class Puzzle {
         this.name = name;
     }
 
-    public Collection<String> getWords() {
+    public Set<String> getWords() {
         return words;
     }
 
-    public void setWords(Collection<String> words) {
+    public void setWords(Set<String> words) {
         this.words = words;
     }
 

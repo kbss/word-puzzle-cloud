@@ -1,9 +1,6 @@
 package org.forsp.game.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -16,15 +13,19 @@ public class WordPuzzle {
     private Board board;
     private int dim;
     private Map<Character, Collection<Point>> charMap;
+    private Set<String> words;
     private Point[] SEARCH_DIRECTIONS = {
             new Point(0, 1), new Point(0, -1), new Point(1, 0),
             new Point(1, 1), new Point(1, -1), new Point(-1, 0),
             new Point(-1, 1), new Point(-1, -1)
     };
 
-    public WordPuzzle(String puzzle) {
+    public WordPuzzle(String puzzle, Set<String> words) {
         if (puzzle == null) {
             throw new RuntimeException("Invalid char sequence");
+        }
+        if (words == null || words.isEmpty()) {
+            LOGGER.warning("Expected at least one word");
         }
         int size = (int) Math.sqrt(puzzle.length());
         if ((size * size) < puzzle.length()) {
@@ -47,6 +48,7 @@ public class WordPuzzle {
         board = BoardBuilder.build(puzzle, dim);
         fillCharMap();
         LOGGER.info(String.format("Board %sx%s \n%s", dim, dim, board));
+        this.words = words;
     }
 
     public Board getBoard() {
@@ -91,6 +93,21 @@ public class WordPuzzle {
                 chars.add(new Point(x, y));
             }
         }
+    }
+
+    public Word getWord(Point p1, Point p2) {
+        if (p1 == null || p2 == null) {
+            throw new RuntimeException("Invalid points");
+        }
+        char[][] puzzleBoard = board.getBoard();
+        StringBuilder sb = new StringBuilder();
+        for (int x = p1.getX(), y = p1.getY(); x < p2.getX(); x++, y++) {
+            sb.append(puzzleBoard[x][y]);
+
+            System.out.println(puzzleBoard[x][y]);
+        }
+        System.out.println(sb.toString());
+        return null;
     }
 
     public Word searchWord(String word) {

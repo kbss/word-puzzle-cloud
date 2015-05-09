@@ -39,7 +39,7 @@ public class WordPuzzleGameApi {
 
 
     private Board getPuzzle(Puzzle puzzle) {
-        WordPuzzle game = new WordPuzzle(puzzle.getContent());
+        WordPuzzle game = new WordPuzzle(puzzle.getContent(), puzzle.getWords());
         return game.getBoard();
     }
 
@@ -72,6 +72,7 @@ public class WordPuzzleGameApi {
             dto.setId(p.getId());
             dto.setBoard(getPuzzle(p).getBoard());
             dto.setName(p.getName());
+            dto.setWords(p.getWords());
             games.add(dto);
         }
         return games;
