@@ -57,13 +57,14 @@
     <div id="game" ng-show="menu.game">
         <table id="game-board">
             <tr ng-repeat="row in board">
-                <td ng-repeat="cell in row track by $index" class="board-cell" ng-class="{'selected':cell.selected}"
+                <td ng-repeat="cell in row track by $index" class="board-cell"
+                    ng-class="{'selected':cell.selected, 'passed':cell.passed}"
                     data-ng-click="$parent.selectChar($parent.$index, $index)">
                     {{cell.char}}
                 </td>
             </tr>
         </table>
-        <div ng-repeat="word in game.words">{{word}}</div>
+        <div ng-repeat="word in words" ng-class="{'passed':word.passed}">{{word.text}}</div>
         <button type="button" class="btn btn-default col-xs-12" ng-click="showMenu()">
             Back
         </button>

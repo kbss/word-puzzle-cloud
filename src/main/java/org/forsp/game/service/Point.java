@@ -5,8 +5,12 @@ package org.forsp.game.service;
  * @since 04/05/2015
  */
 public class Point {
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
+
+    public Point() {
+
+    }
 
     public Point(int x, int y) {
         this.x = x;

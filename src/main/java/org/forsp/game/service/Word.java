@@ -1,7 +1,5 @@
 package org.forsp.game.service;
 
-import org.forsp.game.service.Point;
-
 import java.util.Collection;
 
 /**
@@ -10,8 +8,17 @@ import java.util.Collection;
  */
 public class Word {
 
+    private Long gameId;
     private Collection<Point> points;
     private String word;
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
 
     public String getWord() {
         return word;

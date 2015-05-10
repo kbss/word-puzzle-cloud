@@ -1,6 +1,9 @@
 package org.forsp.game.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -12,20 +15,15 @@ public class WordPuzzle {
     private final static Logger LOGGER = Logger.getLogger(WordPuzzle.class.getName());
     private Board board;
     private int dim;
-    private Map<Character, Collection<Point>> charMap;
     private Set<String> words;
-    private Point[] SEARCH_DIRECTIONS = {
-            new Point(0, 1), new Point(0, -1), new Point(1, 0),
-            new Point(1, 1), new Point(1, -1), new Point(-1, 0),
-            new Point(-1, 1), new Point(-1, -1)
-    };
 
-    public WordPuzzle(String puzzle, Set<String> words) {
+
+    public WordPuzzle(String puzzle, Collection<String> puzzleWords) {
         if (puzzle == null) {
             throw new RuntimeException("Invalid char sequence");
         }
-        if (words == null || words.isEmpty()) {
-            LOGGER.warning("Expected at least one word");
+        if (puzzleWords == null || puzzleWords.isEmpty()) {
+            throw new RuntimeException("Expected at least one word");
         }
         int size = (int) Math.sqrt(puzzle.length());
         if ((size * size) < puzzle.length()) {
@@ -46,53 +44,26 @@ public class WordPuzzle {
             LOGGER.warning(String.format("Char sequence is bigger than board size (expected: %s, actual: %s), extra charters will be ignored", cells, length));
         }
         board = BoardBuilder.build(puzzle, dim);
-        fillCharMap();
         LOGGER.info(String.format("Board %sx%s \n%s", dim, dim, board));
-        this.words = words;
+
+        words = new HashSet<>(puzzleWords.size());
+        for (String word : puzzleWords) {
+            words.add(word.toUpperCase());
+        }
+    }
+
+    private int getDirection(int x1, int x2) {
+        int result = x2 - x1;
+        if (result == 0) {
+            return 0;
+        } else if (result > 0) {
+            return 1;
+        }
+        return -1;
     }
 
     public Board getBoard() {
         return board;
-    }
-
-    private Collection<Point> searchWord(String word, Point startPos, Point direction) {
-        int wordLength = word.length();
-        char[] chars = word.toCharArray();
-        char[][] puzzleBoard = board.getBoard();
-        int x = startPos.getX();
-        int y = startPos.getY();
-        Collection<Point> points = new ArrayList<Point>(wordLength);
-        for (int i = 0; i < wordLength; i++) {
-            if (!isValid(x, y)) {
-                return null;
-            }
-            char c = chars[i];
-            char found = puzzleBoard[x][y];
-            if (c != found) {
-                return null;
-            }
-            points.add(new Point(x, y));
-            x = x + direction.getX();
-            y = y + direction.getY();
-
-        }
-        return points;
-    }
-
-    private void fillCharMap() {
-        charMap = new HashMap<Character, Collection<Point>>();
-        char[][] puzzleBoard = board.getBoard();
-        for (int x = 0; x < puzzleBoard.length; x++) {
-            for (int y = 0; y < puzzleBoard.length; y++) {
-                char c = puzzleBoard[x][y];
-                Collection<Point> chars = charMap.get(c);
-                if (chars == null) {
-                    chars = new ArrayList<Point>();
-                    charMap.put(c, chars);
-                }
-                chars.add(new Point(x, y));
-            }
-        }
     }
 
     public Word getWord(Point p1, Point p2) {
@@ -101,43 +72,29 @@ public class WordPuzzle {
         }
         char[][] puzzleBoard = board.getBoard();
         StringBuilder sb = new StringBuilder();
-        for (int x = p1.getX(), y = p1.getY(); x < p2.getX(); x++, y++) {
-            sb.append(puzzleBoard[x][y]);
+        Collection<Point> points = new ArrayList<>();
+        int xDirection = getDirection(p1.getX(), p2.getX());
+        int yDirection = getDirection(p1.getY(), p2.getY());
+        int destX = p2.getX() + xDirection;
+        int destY = p2.getY() + yDirection;
 
+        LOGGER.info(p1.getX() + " = " + destX + ", " + p1.getY() + " = " + destY);
+        for (int x = p1.getX(), y = p1.getY(); x != destX || y != destY; x = x + xDirection, y = y + yDirection) {
+            sb.append(puzzleBoard[x][y]);
+            LOGGER.info(puzzleBoard[x][y] + " x = " + x + "->" + p2.getX());
             System.out.println(puzzleBoard[x][y]);
+            points.add(new Point(x, y));
+        }
+
+        System.out.println("Word: " + sb.toString().toUpperCase());
+        if (!words.contains(sb.toString().toUpperCase()) && !words.contains(sb.reverse().toString().toUpperCase())) {
+            return null;
         }
         System.out.println(sb.toString());
-        return null;
-    }
-
-    public Word searchWord(String word) {
-        long start = System.currentTimeMillis();
-        LOGGER.info("Searching word: " + word);
-        char[] chars = word.toCharArray();
-
-        if (chars.length > dim) {
-            LOGGER.info("Word bigger than board size");
-            return null;
-        }
-        Collection<Point> points = charMap.get(chars[0]);
-        if (points == null || points.isEmpty()) {
-            LOGGER.info(String.format("There is no char: %s on board", chars[0]));
-            return null;
-        }
-        for (Point startPos : points) {
-            for (Point searchDirection : SEARCH_DIRECTIONS) {
-                Collection<Point> resultPoints = searchWord(word, startPos, searchDirection);
-                if (resultPoints != null && !resultPoints.isEmpty()) {
-                    LOGGER.info(String.format("Word found, Search time: %s s.", (System.currentTimeMillis() - start) / 1000f));
-                    Word result = new Word();
-                    result.setWord(word);
-                    result.setPoints(resultPoints);
-                    return result;
-                }
-            }
-        }
-        LOGGER.info(String.format("Word %s not found", word));
-        return null;
+        Word word = new Word();
+        word.setPoints(points);
+        word.setWord(sb.toString());
+        return word;
     }
 
     private boolean isValid(int x, int y) {

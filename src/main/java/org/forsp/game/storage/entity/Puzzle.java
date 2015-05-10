@@ -18,7 +18,7 @@ public class Puzzle {
     private String name;
     private String content;
     private Integer size;
-    private Set<String> words;
+    private Collection<String> words;
 
     public String getName() {
         return name;
@@ -28,11 +28,11 @@ public class Puzzle {
         this.name = name;
     }
 
-    public Set<String> getWords() {
+    public Collection<String> getWords() {
         return words;
     }
 
-    public void setWords(Set<String> words) {
+    public void setWords(Collection<String> words) {
         this.words = words;
     }
 

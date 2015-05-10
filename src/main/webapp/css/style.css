@@ -78,8 +78,15 @@ html, body, main, #content {
     height: 100%;
 }
 
-.game-board > tbody > tr > td {
+#game-board {
+    position: relative;
+    top: 10%;
+    /*left: 10%;*/
+    display: inline-block;
+}
 
+.game-board > tbody > tr > td {
+    cursor: pointer;
 }
 
 /*table tr td {*/
@@ -89,14 +96,30 @@ html, body, main, #content {
 /*}*/
 
 .board-cell {
-    width: 30px;
-    height: 30px;
+    width: 5%;
+    height: 5%;
     background-color: #9d9d9d;
     text-align: center;
+    cursor: pointer;
+}
+
+.board-cell:hover {
+
+    background-color: #717171;
+
 }
 
 .selected {
     background-color: #999d58 !important;
+}
+
+.passed {
+    background-color: #179d2d !important;
+    border: 1px solid green;
+}
+
+#game {
+    text-align: center;
 }
 
 /*.board-row > td {*/

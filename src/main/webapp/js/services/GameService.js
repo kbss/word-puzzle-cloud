@@ -10,16 +10,22 @@ puzzle.factory('GameService',
             },
             getAllGames: function () {
                 return gapi.client.puzzle.getAllGames();
+            },
+            checkWord: function (reqest) {
+                return gapi.client.puzzle.checkWord(reqest);
             }
             , addGame: function (request) {
-                $log.debug('Adding new game')
+                $log.debug('Adding new game');
                 request = {
-                    "content": "gdfhdfhdfhdfgvdfbdfhdfhdfh",
-                    "name": "test1",
+                    "content": "VNYBKGSRORANGEETRNXWPLAEALKAPMHNWMRPOCAXBGATNOMEL",
+                    "name": "Simple game 1",
                     "words": [
-                        "word1",
-                        "word2",
-                        "word3"
+                        "banana",
+                        "APPLE",
+                        "LEMON",
+                        "ORANGE",
+                        "GRAPES",
+                        "CHERRY"
                     ]
                 }
                 return gapi.client.puzzle.add(request);
