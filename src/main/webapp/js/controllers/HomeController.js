@@ -4,7 +4,7 @@
 puzzle.controller('HomeController',
     ['$scope', '$rootScope', '$log', '$location', '$window', 'CloudService', 'GameService', function ($scope, $rootScope, $log, $location, $window, CloudService, GameService) {
 
-        $scope.isLoading = true;
+        $rootScope.isLoading = true;
         $scope.games = [];
         $scope.score = [];
         $scope.game = {};
@@ -12,6 +12,11 @@ puzzle.controller('HomeController',
         $scope.words = [];
         $scope.selected = [];
         $scope.size = 0;
+        $scope.result = {
+            startTime: undefined,
+            endTime: undefined,
+            score: undefined
+        }
 
 
         $scope.menu = {
@@ -36,7 +41,7 @@ puzzle.controller('HomeController',
                 }, function (rejectedMessage) {
                     $log.warn(rejectedMessage);
                 })['finally'](function () {
-                    $scope.isLoading = false;
+                    $rootScope.isLoading = false;
                 });
             },
             getScore: function () {
@@ -103,7 +108,6 @@ puzzle.controller('HomeController',
             }
             $scope.selected[$scope.selected.length] = $scope.board[x][y];
             $scope.board[x][y].selected = true;
-            $log.debug(x + 'x' + y);
 
             if ($scope.selected.length == 2) {
                 var p1 = $scope.selected[0];
@@ -123,20 +127,29 @@ puzzle.controller('HomeController',
                     word: null
 
                 }
+                API.clearSelection();
                 GameService.checkWord(request).then(function (resp) {
                     $log.debug(resp.result.points);
                     var points = resp.result.points;
                     var word = resp.result.word;
+                    var allPassed = true;
                     for (var i = 0; i < $scope.words.length; i++) {
                         $log.debug($scope.words[i] + "==" + word);
+
                         if ($scope.words[i].text == word) {
                             $scope.words[i].passed = true;
-                            break;
                         }
+                        allPassed &= $scope.words[i].passed;
+                    }
+                    if (allPassed) {
+                        $scope.result.endTime = new Date().getTime();
+                        $log.debug("(" + $scope.result.startTime + "/" + $scope.result.endTime + ")" + "*" + $scope.size + "*" + "(" + $scope.size + "*" + $scope.game.words.length + ")");
+                        $scope.result.score = Math.round(($scope.size * $scope.game.words.length * 1000) * 1000 / ($scope.result.endTime - $scope.result.startTime));
                     }
                     for (var i = 0; i < points.length; i++) {
                         $scope.board[points[i].x][points[i].y].passed = true;
                     }
+
                     $scope.$apply();
                 }, function (err) {
                     API.clearSelection();
@@ -146,13 +159,9 @@ puzzle.controller('HomeController',
             }
 
         }
-
         $scope.startGame = function (id) {
-
-
             for (var i = 0; i < $scope.games.length; i++) {
                 if (id == $scope.games[i].id) {
-                    $log.debug('asfasf' + $scope.games[i].name);
                     $scope.game = $scope.games[i];
                     $scope.menu.list = false;
                     $scope.menu.game = true
@@ -160,6 +169,7 @@ puzzle.controller('HomeController',
                 }
             }
             $scope.size = $scope.game.board.length;
+            $scope.board = [];
             for (var i = 0; i < $scope.game.board.length; i++) {
                 var chars = $scope.game.board[i].split('');
                 $scope.board[i] = [];
@@ -171,6 +181,9 @@ puzzle.controller('HomeController',
             for (var i = 0; i < $scope.game.words.length; i++) {
                 $scope.words[i] = {text: $scope.game.words[i].toUpperCase(), valid: false};
             }
+            $scope.result.startTime = new Date().getTime();
+            $scope.result.endTime = 0;
+            $scope.result.score = 0;
 
         }
     }]

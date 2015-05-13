@@ -1,0 +1,87 @@
+<div class="game-container full-width">
+    <div id="game-list" class="fadein fadeout" ng-if="gameList && !isLoading">
+
+        <div ng-repeat="game in games" class="row">
+
+            <div class="col-xs-5"> {{game.name}}</div>
+
+            <div class="col-xs-3">
+                <button type="button" class="btn btn-standard menu-item"
+                        data-ng-click="$parent.edit(game.id)" title="Edit Game">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-standard menu-item"
+                        data-ng-click="$parent.confirmDeletion(game.id)" title="Delete Game">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+
+            </div>
+
+        </div>
+        <button type="button" class="btn btn-standard menu-item" ng-click="addNewGame()"
+                title="Add new game">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+
+        <a href="/">
+            <button type="button" class="btn btn-standard col-xs-1" ng-click="showMenu()">
+                Back
+            </button>
+        </a>
+    </div>
+    <div id="game-edit" class="fadein fadeout" ng-show="gameEdit">
+        <form role="form">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" ng-model="game.name" ng-model-onblur>
+            </div>
+            <div class="form-group">
+                <label for="content">Puzzle:</label>
+                <input type="text" class="form-control" id="content" ng-model="game.content" ng-model-onblur>
+            </div>
+            <div class="form-group">
+                <label>Words:</label>
+
+                <div ng-repeat="word in game.words track by $index" class="row">
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" ng-model="game.words[$index]">
+                    </div>
+
+                    <span class="search-clear glyphicon glyphicon-remove-circle  col-xs-1"
+                          ng-click="$parent.removeWord($index)"
+                            ></span>
+
+                </div>
+                <div>
+                    <button type="button" class="btn btn-standard menu-item" ng-click="addWord()"
+                            title="Add word">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-standard" ng-click="saveGame()" title="Save game">Submit</button>
+            <button type="submit" class="btn btn-standard" ng-click="showGameList()" title="Close">Close</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm deletion</h4>
+            </div>
+            <div class="modal-body">
+                <p>Game {{game.name}} will be deleted, continue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-standard" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-standard" ng-click=" showGameList()">Delete</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div><!-- /.modal -->

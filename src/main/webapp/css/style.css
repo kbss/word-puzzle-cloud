@@ -9,6 +9,10 @@ html, body, main, #content {
     background-color: white;
     position: absolute;
     z-index: 99999;
+    -moz-transition: 2s linear;
+    -o-transition: 2s linear;
+    transition: 2s linear;
+    opacity: 1;
 }
 
 .spinner-box {
@@ -95,34 +99,127 @@ html, body, main, #content {
 /*height: 30px;*/
 /*}*/
 
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: scale3d(.3, .3, .3);
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
 .board-cell {
-    width: 5%;
-    height: 5%;
-    background-color: #9d9d9d;
+    width: 30px;
+    height: 30px;
+
     text-align: center;
     cursor: pointer;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    background-image: none;
+    border: 1px solid transparent;
+    border: 1px solid rgba(0, 0, 0, 0.07);
 }
 
 .board-cell:hover {
-
-    background-color: #717171;
-
+    background-color: rgba(113, 113, 113, 0.15);
 }
 
 .selected {
-    background-color: #999d58 !important;
+    background-color: #ffd400 !important;
+}
+
+.css-class-add, .css-class-remove {
+    -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    -moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    -o-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
 }
 
 .passed {
-    background-color: #179d2d !important;
-    border: 1px solid green;
+    background-color: rgba(0, 255, 42, 0.42);
+
 }
 
 #game {
     text-align: center;
 }
 
+.error-header {
+    background-color: #ff6144;
+}
+
+.error-icon {
+    color: red;
+    font-size: 50px;
+}
+
+.search-clear {
+    /* position: absolute; */
+    right: 55px;
+    top: 5px;
+    bottom: 0;
+    height: 16px;
+    margin: auto;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 22px;
+    color: rgba(255, 165, 165, 0.43);
+}
+
+.search-clear:hover {
+    color: rgb(255, 36, 56);
+}
+
+.animate-enter {
+    -webkit-transition: 5s linear all; /* Chrome */
+    transition: 5s linear all;
+    opacity: 0;
+}
+
+.animate-enter.animate-enter-active {
+    opacity: 1;
+}
+
+.passed-word {
+    color: #179d2d;
+}
+
+
+.fadeout {
+
+    animation-duration: 0.1s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+    opacity: 0;
+    display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+    opacity: 1;
+    display: block !important;
+    transform: scale3d(.3, .3, .3);
+}
+
 /*.board-row > td {*/
 /*width: 30px;*/
 /*height: 30px;*/
 /*}*/
+
+.btn-standard {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.btn-standard:hover {
+
+    background-color: #F7F7F7;
+
+}

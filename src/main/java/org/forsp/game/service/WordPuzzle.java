@@ -1,9 +1,9 @@
 package org.forsp.game.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.forsp.game.exceptions.PuzzleException;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -17,13 +17,20 @@ public class WordPuzzle {
     private int dim;
     private Set<String> words;
 
+    private Map<Character, Collection<Point>> charMap;
+    private Point[] SEARCH_DIRECTIONS = {
+            new Point(0, 1), new Point(0, -1), new Point(1, 0),
+            new Point(1, 1), new Point(1, -1), new Point(-1, 0),
+            new Point(-1, 1), new Point(-1, -1)
+    };
 
-    public WordPuzzle(String puzzle, Collection<String> puzzleWords) {
+
+    public WordPuzzle(String puzzle, Collection<String> puzzleWords) throws PuzzleException {
         if (puzzle == null) {
-            throw new RuntimeException("Invalid char sequence");
+            throw new PuzzleException("Invalid char sequence");
         }
         if (puzzleWords == null || puzzleWords.isEmpty()) {
-            throw new RuntimeException("Expected at least one word");
+            throw new PuzzleException("Expected at least one word");
         }
         int size = (int) Math.sqrt(puzzle.length());
         if ((size * size) < puzzle.length()) {
@@ -33,19 +40,19 @@ public class WordPuzzle {
 
         LOGGER.info("Creating puzzle board with chars: " + puzzle + ", size " + dim + "x" + dim);
         if (dim < 2) {
-            throw new RuntimeException("Minimum board size is 2");
+            throw new PuzzleException("Minimum board size is 2");
         }
         int length = puzzle.length();
         int cells = dim * dim;
         if (length < cells) {
-            throw new RuntimeException(String.format("Wrong char sequence, expected: %s chars but found: %s", cells, length));
+            throw new PuzzleException(String.format("Wrong char sequence, expected: %s chars but found: %s", cells, length));
         }
         if (length > cells) {
             LOGGER.warning(String.format("Char sequence is bigger than board size (expected: %s, actual: %s), extra charters will be ignored", cells, length));
         }
         board = BoardBuilder.build(puzzle, dim);
         LOGGER.info(String.format("Board %sx%s \n%s", dim, dim, board));
-
+        fillCharMap();
         words = new HashSet<>(puzzleWords.size());
         for (String word : puzzleWords) {
             words.add(word.toUpperCase());
@@ -66,9 +73,9 @@ public class WordPuzzle {
         return board;
     }
 
-    public Word getWord(Point p1, Point p2) {
+    public Word getWord(Point p1, Point p2) throws PuzzleException {
         if (p1 == null || p2 == null) {
-            throw new RuntimeException("Invalid points");
+            throw new PuzzleException("Invalid points");
         }
         char[][] puzzleBoard = board.getBoard();
         StringBuilder sb = new StringBuilder();
@@ -82,19 +89,88 @@ public class WordPuzzle {
         for (int x = p1.getX(), y = p1.getY(); x != destX || y != destY; x = x + xDirection, y = y + yDirection) {
             sb.append(puzzleBoard[x][y]);
             LOGGER.info(puzzleBoard[x][y] + " x = " + x + "->" + p2.getX());
-            System.out.println(puzzleBoard[x][y]);
             points.add(new Point(x, y));
         }
 
-        System.out.println("Word: " + sb.toString().toUpperCase());
+        LOGGER.info("Word: " + sb.toString().toUpperCase());
         if (!words.contains(sb.toString().toUpperCase()) && !words.contains(sb.reverse().toString().toUpperCase())) {
             return null;
         }
-        System.out.println(sb.toString());
         Word word = new Word();
         word.setPoints(points);
         word.setWord(sb.toString());
         return word;
+    }
+
+    private Collection<Point> searchWord(String word, Point startPos, Point direction) {
+        int wordLength = word.length();
+        char[] chars = StringUtils.trimToEmpty(word).toUpperCase().toCharArray();
+        char[][] puzzleBoard = board.getBoard();
+        int x = startPos.getX();
+        int y = startPos.getY();
+        Collection<Point> points = new ArrayList<Point>(wordLength);
+        for (int i = 0; i < wordLength; i++) {
+            if (!isValid(x, y)) {
+                return null;
+            }
+            char c = chars[i];
+            char found = puzzleBoard[x][y];
+            if (c != found) {
+                return null;
+            }
+            points.add(new Point(x, y));
+            x = x + direction.getX();
+            y = y + direction.getY();
+
+        }
+        return points;
+    }
+
+    private void fillCharMap() {
+        charMap = new HashMap<Character, Collection<Point>>();
+        char[][] puzzleBoard = board.getBoard();
+        for (int x = 0; x < puzzleBoard.length; x++) {
+            for (int y = 0; y < puzzleBoard.length; y++) {
+                char c = puzzleBoard[x][y];
+                Collection<Point> chars = charMap.get(c);
+                if (chars == null) {
+                    chars = new ArrayList<Point>();
+                    charMap.put(c, chars);
+                }
+                chars.add(new Point(x, y));
+            }
+        }
+    }
+
+    public Word searchWord(String word) {
+        String searchWord = word.toUpperCase();
+        long start = System.currentTimeMillis();
+        LOGGER.info("Searching word: " + searchWord);
+        char[] chars = searchWord.toCharArray();
+
+        if (chars.length > dim) {
+            LOGGER.info("Word bigger than board size");
+            return null;
+        }
+        Collection<Point> points = charMap.get(chars[0]);
+        if (points == null || points.isEmpty()) {
+            LOGGER.info(String.format("There is no char: %s on board", chars[0]));
+            return null;
+        }
+        for (Point startPos : points) {
+            for (Point searchDirection : SEARCH_DIRECTIONS) {
+                Collection<Point> resultPoints = searchWord(searchWord, startPos, searchDirection);
+                if (resultPoints != null && !resultPoints.isEmpty()) {
+                    LOGGER.info(String.format("Word found, Search time: %s s.", (System.currentTimeMillis() - start) / 1000f));
+                    Word result = new Word();
+                    result.setWord(searchWord);
+                    result.setPoints(resultPoints);
+                    return result;
+                }
+            }
+        }
+        LOGGER.info(String.format("Word %s not found", word));
+        return null;
     }
 
     private boolean isValid(int x, int y) {

@@ -46,6 +46,8 @@
 <!-- AngularJS Controllers -->
 <script type="text/javascript" src="js/controllers/LayoutController.js"></script>
 <script type="text/javascript" src="js/controllers/HomeController.js"></script>
+<script type="text/javascript" src="js/controllers/GameEditController.js"></script>
+
 <script type="text/javascript" src="js/controllers/404Controller.js"></script>
 
 <!-- Directives -->
@@ -53,13 +55,41 @@
 <!-- Services -->
 <script type="text/javascript" src="js/services/CloudService.js"></script>
 <script type="text/javascript" src="js/services/GameService.js"></script>
+<script type="text/javascript" src="js/services/NotificationService.js"></script>
 
 
 <body ng-controller="LayoutController">
+<div class="spinner-container fadein fadeout" ng-show="isLoading" ng-animate="'animate'">
+    <div class="spinner-box">
+        <div class="spinner"></div>
+        <div class="spinner-text">Loading...</div>
+    </div>
+</div>
 
 <main id="page" role="main" class="i-relative i-min-height-100 i-box-sizing">
 
     <div id="content" ng-view autoscroll="true"></div>
 </main>
+
+<div class="modal fade" id="message">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header " ng-class="{'error-header':message.error, 'info-header':message.info}">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{message.title}}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{message.text}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 </body>
 </html>

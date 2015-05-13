@@ -1,7 +1,7 @@
 /**
  * @author Serhii Krivtsov
  */
-var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule'])
+var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule','ngAnimate'])
     .config(
     ['$locationProvider',
         function ($locationProvider) {
@@ -13,7 +13,7 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule'])
     ['$rootScope',
         function ($rootScope) {
             $rootScope.$on("routeChangeStart", function (event) {
-                $rootScope.hideGlobalLoader = false;
+                $rootScope.isLoading = true;
             });
 
             $rootScope.$on("$routeChangeError", function (event) {
@@ -21,7 +21,7 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule'])
             });
 
             $rootScope.$on("$routeChangeSuccess", function (event, next, current) {
-                $rootScope.hideGlobalLoader = true;
+                $rootScope.isLoading = false;
             });
             $rootScope.$on('$viewContentLoaded', function () {
 
@@ -33,6 +33,11 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule'])
             $routeProvider.when("/", {
                 templateUrl: 'templates/home.page.html',
                 controller: 'HomeController'
+
+            }).when("/edit", {
+                templateUrl: 'templates/edit.page.html',
+                controller: 'GameEditController'
+
             }).when("/404", {
                 templateUrl: 'templates/404.html',
                 controller: '404Controller'

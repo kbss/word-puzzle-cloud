@@ -15,20 +15,9 @@ puzzle.factory('GameService',
                 return gapi.client.puzzle.checkWord(reqest);
             }
             , addGame: function (request) {
-                $log.debug('Adding new game');
-                request = {
-                    "content": "VNYBKGSRORANGEETRNXWPLAEALKAPMHNWMRPOCAXBGATNOMEL",
-                    "name": "Simple game 1",
-                    "words": [
-                        "banana",
-                        "APPLE",
-                        "LEMON",
-                        "ORANGE",
-                        "GRAPES",
-                        "CHERRY"
-                    ]
-                }
-                return gapi.client.puzzle.add(request);
+                return gapi.client.puzzle.save(request);
+            }, deleteGame: function (id) {
+                return gapi.client.puzzle.delete(id);
             }
         }
     }]

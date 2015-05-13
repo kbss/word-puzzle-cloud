@@ -7,7 +7,7 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>org.forsp.game.WordPuzzleGameApi</param-value>
+            <param-value>org.forsp.game.rest.WordPuzzleGameApi</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
