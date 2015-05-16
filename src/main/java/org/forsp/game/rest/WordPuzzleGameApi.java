@@ -29,12 +29,13 @@ public class WordPuzzleGameApi {
 
     @ApiMethod(name = "leaders")
     public Collection<GameScore> getLeaderBoard() {
+        LOGGER.debug("Searching score...");
         return getScore();
 
     }
 
     @ApiMethod(name = "submitScore")
-    public Collection<GameScore> submitScore(@Named("id") Long id, @Named("score") Long score, @Named("name") String name) throws PuzzleException {
+    public void submitScore(@Named("id") Long id, @Named("score") Long score, @Named("name") String name) throws PuzzleException {
 
         if (StringUtils.isBlank(name)) {
             throw new PuzzleException("Name is required");
@@ -50,7 +51,6 @@ public class WordPuzzleGameApi {
         gameScore.setName(name);
         gameScore.setGame(getPuzzle(id));
         ObjectifyService.ofy().save().entity(gameScore).now();
-        return getScore();
     }
 
 
@@ -213,7 +213,6 @@ public class WordPuzzleGameApi {
     private Collection<GameScore> getScore() {
         return ObjectifyService.ofy()
                 .load()
-                .type(GameScore.class).list();
-
+                .type(GameScore.class).order("-score").limit(10).list();
     }
 }

@@ -10,6 +10,7 @@ html, body, main, #content {
     position: absolute;
     z-index: 99999;
     opacity: 1;
+    top: 0px;
 }
 
 .spinner-box {
@@ -63,12 +64,8 @@ html, body, main, #content {
 
 .game-container {
 
-    padding: 10% 20%;
-    height: calc(100% - 50px);
-}
-
-.game-start-menu {
-    text-align: left;
+    padding: 0% 20%;
+    /*height: calc(100% - 50px);*/
 }
 
 .full-width {
@@ -253,12 +250,16 @@ label.player-score, span.player-score {
     font-weight: bold;
 }
 
-label.player-score {
+label.player-score, .player-list {
     color: #72BA66;
 }
 
-span.player-score {
+span.player-score, .list-score {
     color: rgb(255, 151, 49);
+}
+
+.list-score {
+    font-size: 5vmin;
 }
 
 .score-form input.ng-valid.ng-touched {
@@ -312,4 +313,16 @@ span.icon-fix {
 
 .back-section {
     padding-top: 50px;
+}
+
+.leaderboard {
+    margin-top: -50px;
+}
+
+.margin-top-5 {
+    margin-top: 5%;
+}
+
+.margin-top-10 {
+    margin-top: 10%;
 }

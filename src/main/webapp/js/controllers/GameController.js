@@ -2,7 +2,7 @@
  * created by Serhii Kryvtsov
  */
 puzzle.controller('GameController',
-    ['$scope', '$rootScope', '$log', '$location', '$window', 'GameService', 'gameInfo', function ($scope, $rootScope, $log, $location, $window, GameService, gameInfo) {
+    ['$scope', '$rootScope', '$log', '$location', '$window', 'GameService', 'gameInfo', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, GameService, gameInfo, NotificationService) {
 
         $scope.board = [];
         $scope.words = [];
@@ -12,7 +12,7 @@ puzzle.controller('GameController',
             startTime: undefined,
             endTime: undefined,
             score: undefined,
-            playerName: undefined
+            playerName: 'Player1'
         }
         $scope.showScore = false;
         var API = {
@@ -64,6 +64,9 @@ puzzle.controller('GameController',
                         if (allPassed) {
                             $scope.result.endTime = new Date().getTime();
                             $scope.result.score = Math.round(($scope.size * $scope.size * 10 * gameInfo.words.length * 10) * 1000 / ($scope.result.endTime - $scope.result.startTime));
+                            if ($scope.result.score < 1) {
+                                $scope.result.score = 1;
+                            }
                             $scope.showScore = true;
                         }
                         for (var i = 0; i < points.length; i++) {
@@ -73,6 +76,8 @@ puzzle.controller('GameController',
                         $scope.$apply();
                     }, function (err) {
                         API.clearSelection();
+                        $scope.selected[$scope.selected.length] = $scope.board[x][y];
+                        $scope.board[x][y].selected = true;
                         $log.error(err.result.error.errors[0].message)
                         $scope.$apply();
                     });
@@ -97,20 +102,32 @@ puzzle.controller('GameController',
                 $scope.result.startTime = new Date().getTime();
                 $scope.result.endTime = 0;
                 $scope.result.score = 0;
+            }, navigateToScore: function () {
+                $log.debug('Redirecting to score page')
+                $location.path('score/');
+                $scope.$apply();
             }
         }
 
         $scope.selectChar = function (x, y) {
             API.selectChar(x, y);
         }
-        $scope.submitScore = function ($form) {
-            $log.debug($form);
-            //var name = $scope.result.playerName;
-            //
-            //if(true) {
-            //    $form.playerName.$setValidity('required', false);
-            //}
-            //$log.debug( $form.playerName.$invalid);
+        $scope.submitScore = function () {
+            $rootScope.isLoading = true;
+            var request = {
+                id: gameInfo.id,
+                score: $scope.result.score,
+                name: $scope.result.playerName
+            }
+            GameService.submitScore(request).then(function (resp) {
+                $rootScope.isLoading = false;
+                API.navigateToScore();
+            }, function (err) {
+                $log.error(err.result.error.errors[0].message);
+                $rootScope.isLoading = false;
+                NotificationService.error(err.result.error.errors[0].message);
+                API.navigateToScore();
+            });
         }
         API.startGame();
     }]

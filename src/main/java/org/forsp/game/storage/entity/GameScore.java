@@ -1,10 +1,7 @@
 package org.forsp.game.storage.entity;
 
 import com.googlecode.objectify.Ref;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Load;
-import com.googlecode.objectify.annotation.Parent;
+import com.googlecode.objectify.annotation.*;
 
 /**
  * @author Serhii Kryvtsov
@@ -20,6 +17,7 @@ public class GameScore {
     @Load
     private Ref<Puzzle> game;
     private String name;
+    @Index
     private Long score;
 
     public Long getId() {
