@@ -23,21 +23,30 @@
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
 
-        <a href="/">
-            <button type="button" class="btn btn-standard col-xs-1" ng-click="showMenu()">
-                Back
-            </button>
-        </a>
+        <div class="back-section">
+            <a href="/">
+                <button type="button" class="btn btn-standard col-xs-12">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span
+                        class="icon-fix">Back</span>
+                </button>
+            </a>
+        </div>
     </div>
     <div id="game-edit" class="fadein fadeout" ng-show="gameEdit">
-        <form role="form">
+        <form role="form" name="editForm">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" class="form-control" id="name" ng-model="game.name" ng-model-onblur>
+                <input type="text" class="form-control" name="name" id="name" ng-model="game.name" ng-model-onblur required>
+            </div>
+            <div class="error fadein fadeout anim" ng-show="editForm.name.$invalid">
+                Name is required
             </div>
             <div class="form-group">
                 <label for="content">Puzzle:</label>
-                <input type="text" class="form-control" id="content" ng-model="game.content" ng-model-onblur>
+                <input type="text" class="form-control" id="content" name="content" ng-model="game.content" ng-model-onblur required>
+            </div>
+            <div class="error fadein fadeout anim" ng-show="editForm.content.$invalid">
+                Content is required
             </div>
             <div class="form-group">
                 <label>Words:</label>
@@ -59,7 +68,7 @@
                     </button>
                 </div>
             </div>
-            <button type="submit" class="btn btn-standard" ng-click="saveGame()" title="Save game">Submit</button>
+            <button type="submit" class="btn btn-standard" ng-click="saveGame(editForm)" title="Save game">Submit</button>
             <button type="submit" class="btn btn-standard" ng-click="showGameList()" title="Close">Close</button>
         </form>
     </div>

@@ -9,27 +9,27 @@ puzzle.factory('CloudService',
             var rootApi = '//' + window.location.host + '/_ah/api';
             gapi.client.load('puzzle', 'v1', function () {
                 $log.debug("Puzzle API loaded");
-                API.promise.resolve();
+                API.deferred.resolve();
             }, rootApi);
         };
         return API = {
             init: function () {
-                API.promise = $q.defer();
+                API.deferred = $q.defer();
                 var script = document.createElement("script");
                 script.src = 'https://apis.google.com/js/client.js?onload=initGapi';
                 script.type = "text/javascript";
                 script.onerror = function () {
                     $log.warn('apis.google.com/js/client Script Failed Loading');
-                    API.promise.reject("Failed to load gapi script");
+                    API.deferred.reject("Failed to load gapi script");
                 };
                 document.body.appendChild(script);
                 script = null;
-                return API.promise.promise;
+                return API.deferred.promise;
             }
             , isReady: function () {
                 return isReady;
             }
-            , promise: undefined
+            , deferred: undefined
         }
     }]
 );

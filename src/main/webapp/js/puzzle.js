@@ -1,7 +1,7 @@
 /**
  * @author Serhii Krivtsov
  */
-var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule','ngAnimate'])
+var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule', 'ngAnimate'])
     .config(
     ['$locationProvider',
         function ($locationProvider) {
@@ -37,6 +37,34 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule','ngAnimate'
             }).when("/edit", {
                 templateUrl: 'templates/edit.page.html',
                 controller: 'GameEditController'
+            }).when("/score", {
+                templateUrl: 'templates/score.page.html',
+                controller: 'ScoreController'
+            }).when("/game/:gameId", {
+                templateUrl: 'templates/game.page.html',
+                controller: 'GameController',
+                resolve: {
+                    gameInfo: function ($q, $rootScope, $log, $route, GameService, NotificationService) {
+                        var deferred = $q.defer(), gameId = $route.current.params.gameId;
+                        $rootScope.isLoading = true;
+                        $log.debug('Game id: ' + gameId);
+                        if (!gameId) {
+                            NotificationService.error("Invalid game id");
+                            $rootScope.isLoading = false;
+                            return;
+                        }
+                        GameService.getGameById(gameId).then(function (resp) {
+                            deferred.resolve(resp.result);
+                            $rootScope.isLoading = false;
+                        }, function (err) {
+                            $rootScope.isLoading = false;
+                            $log.error(err.result.error.errors[0].message);
+                            NotificationService.error(err.result.error.errors[0].message);
+                            deferred.resolve(err);
+                        });
+                        return deferred.promise;
+                    }
+                }
 
             }).when("/404", {
                 templateUrl: 'templates/404.html',

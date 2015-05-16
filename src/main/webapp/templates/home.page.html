@@ -5,6 +5,13 @@
                 Start Game
             </button>
         </div>
+        <a href="/score">
+            <div class="row">
+                <button type="button" class="btn btn-standard col-xs-12">
+                    Leaderboard
+                </button>
+            </div>
+        </a>
         <a href="/edit">
             <div class="row">
                 <button type="button" class="btn btn-standard col-xs-12" ng-click="showScore()">
@@ -12,6 +19,7 @@
                 </button>
             </div>
         </a>
+
 
         <div class="row">
             <button type="button" class="btn btn-standard col-xs-12" ng-click="showInfo()">
@@ -21,31 +29,31 @@
     </div>
 
     <div id="game-selector" class="fadein fadeout" ng-show="menu.list">
-        <ul>
-            <li ng-repeat="game in games">
-                <button type="button" class="btn btn-standard col-xs-12 menu-item"
-                        data-ng-click="$parent.startGame(game.id)">
-                    {{game.name}}
-                </button>
 
-            </li>
-        </ul>
+        <table class="game-item-container">
+            <tr ng-repeat="game in games" class="row game-item anim" ng-click="showGame(game.id)">
+                <td>{{game.name}}</td>
+                <td>{{game.board.length}} x {{game.board.length}}</td>
+            </tr>
+        </table>
+
+
         <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
-            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span class="icon-fix">Back</span>
         </button>
     </div>
 
     <div id="game-score" ng-show="menu.score">
 
         <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
-            Back
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span class="icon-fix">Back</span>
         </button>
     </div>
 
     <div id="game-info" ng-show="menu.info">
         Game based on Google Engine API and angularJS
         <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
-            Back
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span class="icon-fix">Back</span>
         </button>
     </div>
 
@@ -54,16 +62,19 @@
             <tr ng-repeat="row in board" ng-animate="'animate'">
                 <td ng-repeat="cell in row track by $index" class="board-cell"
                     ng-class="{'selected':cell.selected, 'passed':cell.passed}"
-                    data-ng-click="$parent.selectChar($parent.$index, $index)" >
+                    data-ng-click="$parent.selectChar($parent.$index, $index)">
                     {{cell.char}}
                 </td>
             </tr>
         </table>
-        <div ng-repeat="word in words">
-            <span class="glyphicon glyphicon-ok passed-word" aria-hidden="true" ng-if="word.passed"></span><span>{{word.text}}</span>
+        <div ng-animate="'animate'">
+            <span ng-repeat="word in words" class="game-word fadein fadeout" ng-class="{'passed' : word.passed}">
+                <span>{{word.text}}</span>
+            </span>
         </div>
+
         <button type="button" class="btn btn-standard col-xs-1" ng-click="showMenu()">
-            Back
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span class="icon-fix">Back</span>
         </button>
     </div>
 </div>

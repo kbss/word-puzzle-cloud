@@ -38,7 +38,6 @@ public class WordPuzzle {
         }
         dim = size;
 
-        LOGGER.info("Creating puzzle board with chars: " + puzzle + ", size " + dim + "x" + dim);
         if (dim < 2) {
             throw new PuzzleException("Minimum board size is 2");
         }
@@ -88,7 +87,6 @@ public class WordPuzzle {
         LOGGER.info(p1.getX() + " = " + destX + ", " + p1.getY() + " = " + destY);
         for (int x = p1.getX(), y = p1.getY(); x != destX || y != destY; x = x + xDirection, y = y + yDirection) {
             sb.append(puzzleBoard[x][y]);
-            LOGGER.info(puzzleBoard[x][y] + " x = " + x + "->" + p2.getX());
             points.add(new Point(x, y));
         }
 

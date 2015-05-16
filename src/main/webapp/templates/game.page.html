@@ -1,0 +1,49 @@
+<div class="game-container full-width">
+    <div id="game" ng-hide="showScore">
+        <table id="game-board">
+            <tr ng-repeat="row in board">
+                <td ng-repeat="cell in row track by $index" class="board-cell"
+                    ng-class="{'selected':cell.selected, 'passed':cell.passed}"
+                    data-ng-click="$parent.selectChar($parent.$index, $index)">
+                    {{cell.char}}
+                </td>
+            </tr>
+        </table>
+        <div ng-animate="'animate'">
+            <span ng-repeat="word in words" class="game-word fadein fadeout" ng-class="{'passed' : word.passed}">
+                <span>{{word.text}}</span>
+            </span>
+        </div>
+
+    </div>
+    <div class="fadein fadeout" ng-show="showScore">
+        <form role="form" class="score-form" name="scoreForm" ng-submit="submitScore(scoreForm)">
+            <div class="row">
+                <label class="player-score">Your Score:</label><span class="player-score">{{result.score}}</span>
+            </div>
+            <div class="input-group row">
+                <span class="input-group-addon" id="playerName">Name</span>
+                <input type="text" class="form-control player-name" placeholder="Enter Your Name"
+                       aria-describedby="playerName" name="playerName" required ng-model="result.playerName">
+
+            </div>
+            <div class="error fadein fadeout anim block-error" ng-show="scoreForm.playerName.$invalid">Name is
+                required
+            </div>
+            <div class="back-section">
+                <button type="submit" class="btn btn-standard" title="Submit score"
+                        ng-disabled="scoreForm.playerName.$invalid">Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="back-section">
+        <a href="/">
+            <button type="button" class="btn btn-standard col-xs-12">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span
+                    class="icon-fix">Back</span>
+            </button>
+        </a>
+    </div>
+</div>

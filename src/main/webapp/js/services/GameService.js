@@ -18,6 +18,14 @@ puzzle.factory('GameService',
                 return gapi.client.puzzle.save(request);
             }, deleteGame: function (id) {
                 return gapi.client.puzzle.delete(id);
+            }, getGameById: function (id) {
+                $log.debug('Loading game by id: ' + id)
+                return gapi.client.puzzle.getGameById({'gameId': id});
+            }, submitScore: function (request) {
+                return gapi.client.puzzle.submitScore(request);
+            }
+            , getLeaderboard: function () {
+                return gapi.client.puzzle.leaders();
             }
         }
     }]

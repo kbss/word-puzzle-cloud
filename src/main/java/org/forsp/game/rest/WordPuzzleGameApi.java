@@ -6,6 +6,7 @@ import com.google.api.server.spi.config.Named;
 import com.googlecode.objectify.ObjectifyService;
 import org.apache.commons.lang3.StringUtils;
 import org.forsp.game.exceptions.PuzzleException;
+import org.forsp.game.exceptions.PuzzleNotFoundException;
 import org.forsp.game.service.*;
 import org.forsp.game.storage.entity.GameScore;
 import org.forsp.game.storage.entity.Puzzle;
@@ -32,6 +33,27 @@ public class WordPuzzleGameApi {
 
     }
 
+    @ApiMethod(name = "submitScore")
+    public Collection<GameScore> submitScore(@Named("id") Long id, @Named("score") Long score, @Named("name") String name) throws PuzzleException {
+
+        if (StringUtils.isBlank(name)) {
+            throw new PuzzleException("Name is required");
+        }
+        if (id == null) {
+            throw new PuzzleException("Game ID is required");
+        }
+        if (score == null) {
+            throw new PuzzleException("Game ID is required");
+        }
+        GameScore gameScore = new GameScore();
+        gameScore.setScore(score);
+        gameScore.setName(name);
+        gameScore.setGame(getPuzzle(id));
+        ObjectifyService.ofy().save().entity(gameScore).now();
+        return getScore();
+    }
+
+
     /**
      * Removes puzzle from storage by given id.
      *
@@ -52,7 +74,7 @@ public class WordPuzzleGameApi {
         Puzzle puzzle = ObjectifyService.ofy().load().type(Puzzle.class).id(id).now();
 
         if (puzzle == null) {
-            throw new PuzzleException("Puzzle not found");
+            throw new PuzzleNotFoundException(id);
         }
         return puzzle;
     }
@@ -93,12 +115,12 @@ public class WordPuzzleGameApi {
         for (String word : game.getWords()) {
             words.add(word.toUpperCase());
         }
-        testGame(game);
+        validateGame(game);
         //Async add
         ObjectifyService.ofy().save().entity(game);
     }
 
-    private void testGame(Puzzle game) throws PuzzleException {
+    private void validateGame(Puzzle game) throws PuzzleException {
         WordPuzzle puzzle = new WordPuzzle(game.getContent(), game.getWords());
         List<String> errorWords = new ArrayList<>(game.getWords().size());
         for (String word : game.getWords()) {
@@ -135,17 +157,34 @@ public class WordPuzzleGameApi {
                 .type(Puzzle.class).list();
         for (Puzzle p : puzzle) {
             try {
-                GameDto dto = new GameDto();
-                dto.setId(p.getId());
-                dto.setBoard(getPuzzle(p).getBoard());
-                dto.setName(p.getName());
-                dto.setWords(p.getWords());
+                GameDto dto = toGameDto(p);
                 games.add(dto);
             } catch (PuzzleException e) {
                 LOGGER.error(e.getMessage(), e);
             }
         }
         return games;
+    }
+
+    /**
+     * Returns all available puzzle games.
+     *
+     * @return collection of word puzzle games
+     */
+    @ApiMethod(name = "getGameById")
+    public GameDto getGameById(@Named("gameId") Long gameId) throws PuzzleException {
+        LOGGER.debug("Loading game: {}", gameId);
+        Puzzle puzzle = getPuzzle(gameId);
+        return toGameDto(puzzle);
+    }
+
+    private GameDto toGameDto(Puzzle p) throws PuzzleException {
+        GameDto dto = new GameDto();
+        dto.setId(p.getId());
+        dto.setBoard(getPuzzle(p).getBoard());
+        dto.setName(p.getName());
+        dto.setWords(p.getWords());
+        return dto;
     }
 
     /**

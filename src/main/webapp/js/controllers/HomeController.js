@@ -2,12 +2,12 @@
  * created by Serhii Kryvtsov
  */
 puzzle.controller('HomeController',
-    ['$scope', '$rootScope', '$log', '$location', '$window', 'CloudService', 'GameService', function ($scope, $rootScope, $log, $location, $window, CloudService, GameService) {
+    ['$scope', '$rootScope', '$log', '$location', '$window', 'CloudService', 'GameService', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, CloudService, GameService, NotificationService) {
 
         $rootScope.isLoading = true;
         $scope.games = [];
         $scope.score = [];
-        $scope.game = {};
+
         $scope.board = [];
         $scope.words = [];
         $scope.selected = [];
@@ -17,6 +17,7 @@ puzzle.controller('HomeController',
             endTime: undefined,
             score: undefined
         }
+        $scope.score = 0;
 
 
         $scope.menu = {
@@ -49,6 +50,7 @@ puzzle.controller('HomeController',
                     $log.debug(resp.result.items);
                 }, function (err) {
                     $log.error(err);
+                    NotificationService.error(err.result.error.errors[0].message);
                 });
             },
             addGame: function () {
@@ -56,6 +58,7 @@ puzzle.controller('HomeController',
                     $log.debug(resp.result.items);
                 }, function (err) {
                     $log.error(err);
+                    NotificationService.error(err.result.error.errors[0].message);
                 });
             },
             getGames: function () {
@@ -66,6 +69,7 @@ puzzle.controller('HomeController',
                     $scope.$apply();
                 }, function (err) {
                     $log.error('Err:' + err);
+                    NotificationService.error(err.result.error.errors[0].message);
                 });
             }, clearSelection: function () {
                 for (var i = 0; i < $scope.selected.length; i++) {
@@ -185,6 +189,9 @@ puzzle.controller('HomeController',
             $scope.result.endTime = 0;
             $scope.result.score = 0;
 
+        }
+        $scope.showGame = function (id) {
+            $location.path('game/' + id);
         }
     }]
 );

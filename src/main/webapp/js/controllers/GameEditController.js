@@ -107,7 +107,11 @@ puzzle.controller('GameEditController',
             $scope.game.words.push('');
         }
 
-        $scope.saveGame = function () {
+        $scope.saveGame = function ($form) {
+
+            if (!$form.$valid) {
+                return;
+            }
             API.saveGame();
         }
 
