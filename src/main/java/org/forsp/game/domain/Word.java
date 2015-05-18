@@ -1,4 +1,6 @@
-package org.forsp.game.service;
+package org.forsp.game.domain;
+
+import org.forsp.game.domain.Point;
 
 import java.util.Collection;
 

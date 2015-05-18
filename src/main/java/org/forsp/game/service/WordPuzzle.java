@@ -1,6 +1,9 @@
 package org.forsp.game.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.forsp.game.domain.Board;
+import org.forsp.game.domain.Point;
+import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
 
 import java.util.*;
@@ -49,13 +52,22 @@ public class WordPuzzle {
         if (length > cells) {
             LOGGER.warning(String.format("Char sequence is bigger than board size (expected: %s, actual: %s), extra charters will be ignored", cells, length));
         }
-        board = BoardBuilder.build(puzzle, dim);
+        board = build(puzzle, dim);
         LOGGER.info(String.format("Board %sx%s \n%s", dim, dim, board));
         fillCharMap();
         words = new HashSet<>(puzzleWords.size());
         for (String word : puzzleWords) {
             words.add(word.toUpperCase());
         }
+    }
+
+    private static Board build(String words, int dim) {
+        char[][] board = new char[dim][dim];
+        char[] chars = words.toCharArray();
+        for (int i = 0; i < dim; i++) {
+            System.arraycopy(chars, i * dim, board[i], 0, dim);
+        }
+        return new Board(board);
     }
 
     private int getDirection(int x1, int x2) {

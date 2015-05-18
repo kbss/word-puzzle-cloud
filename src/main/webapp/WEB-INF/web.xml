@@ -49,6 +49,6 @@
     </filter-mapping>
 
     <listener>
-        <listener-class>org.forsp.game.storage.entity.OfyHelper</listener-class>
+        <listener-class>org.forsp.game.service.OfyHelper</listener-class>
     </listener>
 </web-app>

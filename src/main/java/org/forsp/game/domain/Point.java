@@ -1,4 +1,4 @@
-package org.forsp.game.service;
+package org.forsp.game.domain;
 
 /**
  * @author Serhii Kryvtsov
@@ -9,7 +9,7 @@ public class Point {
     private int y;
 
     public Point() {
-
+        //REQUIRED FOR BEAN CONSTRUCTION
     }
 
     public Point(int x, int y) {

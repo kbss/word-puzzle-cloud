@@ -1,7 +1,9 @@
-package org.forsp.game.storage.entity;
+package org.forsp.game.service;
 
 
 import com.googlecode.objectify.ObjectifyService;
+import org.forsp.game.storage.entity.GameScore;
+import org.forsp.game.storage.entity.Puzzle;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

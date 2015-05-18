@@ -3,8 +3,16 @@ package org.forsp.game.rest;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.cmd.QueryKeys;
 import org.apache.commons.lang3.StringUtils;
+import org.forsp.game.domain.Board;
+import org.forsp.game.domain.GameDto;
+import org.forsp.game.domain.Point;
+import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
 import org.forsp.game.exceptions.PuzzleNotFoundException;
 import org.forsp.game.service.*;
@@ -27,6 +35,11 @@ public class WordPuzzleGameApi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WordPuzzleGameApi.class);
 
+    /**
+     * Returns top 10 games score.
+     *
+     * @return top 10 leaderboard
+     */
     @ApiMethod(name = "leaders")
     public Collection<GameScore> getLeaderBoard() {
         LOGGER.debug("Searching score...");
@@ -36,7 +49,6 @@ public class WordPuzzleGameApi {
 
     @ApiMethod(name = "submitScore")
     public void submitScore(@Named("id") Long id, @Named("score") Long score, @Named("name") String name) throws PuzzleException {
-
         if (StringUtils.isBlank(name)) {
             throw new PuzzleException("Name is required");
         }
@@ -63,8 +75,13 @@ public class WordPuzzleGameApi {
     @ApiMethod(name = "delete")
     public void deleteGame(@Named("id") Long id) throws PuzzleException {
         validateRequest(id);
-        //Delete async
+        //Async delete
+        List<GameScore> keys = ObjectifyService.ofy()
+                .load()
+                .type(GameScore.class).ancestor(Key.create(Puzzle.class, id)).list();
+        ObjectifyService.ofy().delete().entities(keys);
         ObjectifyService.ofy().delete().type(Puzzle.class).id(id);
+
     }
 
     private Puzzle getPuzzle(Long id) throws PuzzleException {
@@ -72,7 +89,6 @@ public class WordPuzzleGameApi {
             throw new PuzzleException("Invalid puzzle id");
         }
         Puzzle puzzle = ObjectifyService.ofy().load().type(Puzzle.class).id(id).now();
-
         if (puzzle == null) {
             throw new PuzzleNotFoundException(id);
         }
@@ -116,7 +132,7 @@ public class WordPuzzleGameApi {
             words.add(word.toUpperCase());
         }
         validateGame(game);
-        //Async add
+        //Async save
         ObjectifyService.ofy().save().entity(game);
     }
 
@@ -167,9 +183,10 @@ public class WordPuzzleGameApi {
     }
 
     /**
-     * Returns all available puzzle games.
+     * Returns game by given id
      *
-     * @return collection of word puzzle games
+     * @return game
+     * @throws PuzzleException if there is no game with such id
      */
     @ApiMethod(name = "getGameById")
     public GameDto getGameById(@Named("gameId") Long gameId) throws PuzzleException {
@@ -192,7 +209,7 @@ public class WordPuzzleGameApi {
      *
      * @param word
      * @return word coordinates
-     * @throws PuzzleException
+     * @throws PuzzleException if there is no such word
      */
     @ApiMethod(name = "checkWord")
     public Word checkWord(Word word) throws PuzzleException {

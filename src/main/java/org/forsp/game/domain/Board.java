@@ -1,4 +1,4 @@
-package org.forsp.game.service;
+package org.forsp.game.domain;
 
 import java.util.Arrays;
 

@@ -3,7 +3,7 @@
 
         <div ng-repeat="game in games" class="row">
 
-            <div class="col-xs-5"> {{game.name}}</div>
+            <div class="col-xs-7"> {{game.name}}</div>
 
             <div class="col-xs-3">
                 <button type="button" class="btn btn-standard menu-item"
@@ -36,30 +36,30 @@
         <form role="form" name="editForm">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" class="form-control" name="name" id="name" ng-model="game.name" ng-model-onblur required>
+                <input type="text" class="form-control" name="name" id="name" ng-model="game.name" ng-model-onblur
+                       required>
             </div>
             <div class="error fadein fadeout anim" ng-show="editForm.name.$invalid">
                 Name is required
             </div>
             <div class="form-group">
                 <label for="content">Puzzle:</label>
-                <input type="text" class="form-control" id="content" name="content" ng-model="game.content" ng-model-onblur required>
+                <input type="text" class="form-control" id="content" name="content" ng-model="game.content"
+                       ng-model-onblur required>
             </div>
             <div class="error fadein fadeout anim" ng-show="editForm.content.$invalid">
                 Content is required
             </div>
             <div class="form-group">
                 <label>Words:</label>
-
                 <div ng-repeat="word in game.words track by $index" class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-6" style="padding-left: 0px;">
                         <input type="text" class="form-control" ng-model="game.words[$index]">
                     </div>
 
                     <span class="search-clear glyphicon glyphicon-remove-circle  col-xs-1"
                           ng-click="$parent.removeWord($index)"
                             ></span>
-
                 </div>
                 <div>
                     <button type="button" class="btn btn-standard menu-item" ng-click="addWord()"
@@ -68,7 +68,8 @@
                     </button>
                 </div>
             </div>
-            <button type="submit" class="btn btn-standard" ng-click="saveGame(editForm)" title="Save game">Submit</button>
+            <button type="submit" class="btn btn-standard" ng-click="saveGame(editForm)" title="Save game">Submit
+            </button>
             <button type="submit" class="btn btn-standard" ng-click="showGameList()" title="Close">Close</button>
         </form>
     </div>
@@ -83,11 +84,11 @@
                 <h4 class="modal-title">Confirm deletion</h4>
             </div>
             <div class="modal-body">
-                <p>Game {{game.name}} will be deleted, continue?</p>
+                <p>Game {{game.name}} will be deleted with all scores, delete anyway?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-standard" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-standard" ng-click=" showGameList()">Delete</button>
+                <button type="button" class="btn btn-standard" data-dismiss="modal" title="close">Close</button>
+                <button type="button" class="btn btn-standard" ng-click=" delete()" title="Delete">Delete</button>
             </div>
         </div>
         <!-- /.modal-content -->
