@@ -2,7 +2,7 @@
  * created by Serhii Kryvtsov
  */
 puzzle.controller('GameEditController',
-    ['$scope', '$rootScope', '$log', '$location', '$window', 'CloudService', 'GameService', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, CloudService, GameService, NotificationService) {
+    ['$scope', '$rootScope', '$log', '$location', '$window', 'GameService', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, GameService, NotificationService) {
 
         $rootScope.isLoading = true;
         $scope.games = [];
@@ -12,18 +12,21 @@ puzzle.controller('GameEditController',
         $scope.gameEdit = false;
 
         var API = {
+            init: function () {
+                API.getGames();
+            },
             saveGame: function () {
                 $log.debug($scope.game);
 
                 GameService.addGame($scope.game).then(function (resp) {
-                    $log.debug(resp.result.items);
+                    $log.debug(resp.items);
                     API.getGames();
                     $scope.gameList = true;
                     $scope.gameEdit = false;
                 }, function (err) {
-                    $log.error(err.result.error.errors[0].message);
+                    $log.error(err);
                     $rootScope.isLoading = false;
-                    NotificationService.error(err.result.error.errors[0].message);
+                    NotificationService.error(err);
 
                 });
             },
@@ -39,20 +42,18 @@ puzzle.controller('GameEditController',
             getGames: function () {
                 $rootScope.isLoading = true;
                 GameService.getAllGames().then(function (resp) {
-                    $log.debug('Loaded games: ' + resp.result.items.length);
-                    $scope.games = resp.result.items;
-
+                    $log.debug('Loaded games: ' + resp.items.length);
+                    $scope.games = resp.items;
                     gameMap = {};
-
                     for (var i = 0; i < $scope.games.length; i++) {
                         var game = $scope.games[i];
                         gameMap[game.id] = game;
                     }
                     $rootScope.isLoading = false;
-                    $scope.$apply();
-
                 }, function (err) {
                     $log.error('Err:' + err);
+                    $rootScope.isLoading = false;
+                })['finally'](function () {
                     $rootScope.isLoading = false;
                 });
             }, selectGame: function (id) {
@@ -72,7 +73,7 @@ puzzle.controller('GameEditController',
             }
         }
 
-        API.getGames();
+        API.init();
 
         $scope.showGameList = function () {
             $scope.gameList = true;

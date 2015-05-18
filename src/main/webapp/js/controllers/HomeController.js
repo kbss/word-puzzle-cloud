@@ -2,7 +2,7 @@
  * created by Serhii Kryvtsov
  */
 puzzle.controller('HomeController',
-    ['$scope', '$rootScope', '$log', '$location', '$window', 'CloudService', 'GameService', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, CloudService, GameService, NotificationService) {
+    ['$scope', '$rootScope', '$log', '$location', '$window', 'GameService', 'NotificationService', function ($scope, $rootScope, $log, $location, $window, GameService, NotificationService) {
 
         $rootScope.isLoading = true;
         $scope.games = [];
@@ -28,49 +28,17 @@ puzzle.controller('HomeController',
             game: false
         }
         var API = {
-            init: function () {
-                var promise = CloudService.init();
-                promise.then(function () {
-                    //GameService.addGame().then(function (resp) {
-                    //    $log.debug(resp.result.items);
-                    //}, function (err) {
-                    //    $log.error(err);
-                    //});
-                    API.getScore();
-                    API.getGames();
-
-                }, function (rejectedMessage) {
-                    $log.warn(rejectedMessage);
+            getGames: function () {
+                GameService.getAllGames().then(function (resp) {
+                    $log.debug('Loaded games: ' + resp.items.length);
+                    $scope.games = resp.items;
+                }, function (err) {
+                    $log.error('Err:' + err);
+                    NotificationService.error(err);
                 })['finally'](function () {
                     $rootScope.isLoading = false;
                 });
-            },
-            getScore: function () {
-                GameService.getScore().then(function (resp) {
-                    $log.debug(resp.result.items);
-                }, function (err) {
-                    $log.error(err);
-                    NotificationService.error(err.result.error.errors[0].message);
-                });
-            },
-            addGame: function () {
-                GameService.addGame().then(function (resp) {
-                    $log.debug(resp.result.items);
-                }, function (err) {
-                    $log.error(err);
-                    NotificationService.error(err.result.error.errors[0].message);
-                });
-            },
-            getGames: function () {
-                GameService.getAllGames().then(function (resp) {
-                    $log.debug('Loaded games: ' + resp.result.items.length);
-                    $scope.games = resp.result.items;
 
-                    $scope.$apply();
-                }, function (err) {
-                    $log.error('Err:' + err);
-                    NotificationService.error(err.result.error.errors[0].message);
-                });
             }, clearSelection: function () {
                 for (var i = 0; i < $scope.selected.length; i++) {
                     $scope.selected[i].selected = false;
@@ -78,7 +46,6 @@ puzzle.controller('HomeController',
                 $scope.selected = [];
             }
         }
-        API.init();
 
         $scope.selectGame = function () {
             $scope.menu.start = false;
@@ -106,7 +73,6 @@ puzzle.controller('HomeController',
 
 
         $scope.selectChar = function (x, y) {
-            $log.debug($scope.selected.length);
             if ($scope.selected.length == 2) {
                 API.clearSelection();
             }
@@ -133,13 +99,10 @@ puzzle.controller('HomeController',
                 }
                 API.clearSelection();
                 GameService.checkWord(request).then(function (resp) {
-                    $log.debug(resp.result.points);
-                    var points = resp.result.points;
-                    var word = resp.result.word;
+                    var points = resp.points;
+                    var word = resp.word;
                     var allPassed = true;
                     for (var i = 0; i < $scope.words.length; i++) {
-                        $log.debug($scope.words[i] + "==" + word);
-
                         if ($scope.words[i].text == word) {
                             $scope.words[i].passed = true;
                         }
@@ -147,21 +110,19 @@ puzzle.controller('HomeController',
                     }
                     if (allPassed) {
                         $scope.result.endTime = new Date().getTime();
-                        $log.debug("(" + $scope.result.startTime + "/" + $scope.result.endTime + ")" + "*" + $scope.size + "*" + "(" + $scope.size + "*" + $scope.game.words.length + ")");
+                        //Calculate score
                         $scope.result.score = Math.round(($scope.size * $scope.game.words.length * 1000) * 1000 / ($scope.result.endTime - $scope.result.startTime));
                     }
                     for (var i = 0; i < points.length; i++) {
                         $scope.board[points[i].x][points[i].y].passed = true;
                     }
-
                     $scope.$apply();
                 }, function (err) {
                     API.clearSelection();
-                    $log.error(err.result.error.errors[0].message)
-                    $scope.$apply();
+                    $log.error(err)
+
                 });
             }
-
         }
         $scope.startGame = function (id) {
             for (var i = 0; i < $scope.games.length; i++) {
@@ -188,10 +149,11 @@ puzzle.controller('HomeController',
             $scope.result.startTime = new Date().getTime();
             $scope.result.endTime = 0;
             $scope.result.score = 0;
-
         }
         $scope.showGame = function (id) {
             $location.path('game/' + id);
         }
+
+        API.getGames();
     }]
 );

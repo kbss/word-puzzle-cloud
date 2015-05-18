@@ -326,3 +326,39 @@ span.icon-fix {
 .margin-top-10 {
     margin-top: 10%;
 }
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.game-info {
+    font-size: 16px;
+    padding: 30px 30px;
+}
+
+.logo-container {
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-flow: row wrap; /* Safari 6.1+ */
+    -webkit-align-content: space-around; /* Safari 7.0+ */
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-around;
+}
+
+.error-status {
+    font-size: 10rem;
+    color: #ff9731;
+}
+
+.error-container {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    margin: auto auto;
+    text-align: center;
+}
+
+.error-message{
+    font-size: 5rem;
+}

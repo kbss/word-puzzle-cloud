@@ -31,17 +31,17 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule', 'ngAnimate
     ['$routeProvider',
         function ($routeProvider) {
             $routeProvider.when("/", {
-                templateUrl: 'templates/home.page.html',
+                templateUrl: '/templates/home.page.html',
                 controller: 'HomeController'
 
             }).when("/edit", {
-                templateUrl: 'templates/edit.page.html',
+                templateUrl: '/templates/edit.page.html',
                 controller: 'GameEditController'
             }).when("/score", {
-                templateUrl: 'templates/score.page.html',
+                templateUrl: '/templates/score.page.html',
                 controller: 'ScoreController'
             }).when("/game/:gameId", {
-                templateUrl: 'templates/game.page.html',
+                templateUrl: '/templates/game.page.html',
                 controller: 'GameController',
                 resolve: {
                     gameInfo: function ($q, $rootScope, $log, $route, GameService, NotificationService) {
@@ -54,12 +54,12 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule', 'ngAnimate
                             return;
                         }
                         GameService.getGameById(gameId).then(function (resp) {
-                            deferred.resolve(resp.result);
+                            deferred.resolve(resp);
                             $rootScope.isLoading = false;
                         }, function (err) {
                             $rootScope.isLoading = false;
-                            $log.error(err.result.error.errors[0].message);
-                            NotificationService.error(err.result.error.errors[0].message);
+                            $log.error(err);
+                            NotificationService.error(err);
                             deferred.resolve(err);
                         });
                         return deferred.promise;
@@ -67,7 +67,7 @@ var puzzle = angular.module("puzzle", ['ngRoute', 'webStorageModule', 'ngAnimate
                 }
 
             }).when("/404", {
-                templateUrl: 'templates/404.html',
+                templateUrl: '/templates/404.html',
                 controller: '404Controller'
             }).otherwise({
                 redirectTo: '/404'

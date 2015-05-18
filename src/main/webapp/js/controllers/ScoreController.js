@@ -9,14 +9,13 @@ puzzle.controller('ScoreController',
                 $rootScope.isLoading = true;
                 GameService.getScore().then(function (resp) {
                     $rootScope.isLoading = false;
-                    $log.debug(resp);
-                    $scope.score = resp.result.items;
-                    $scope.$apply();
+                    $scope.score = resp.items;
                 }, function (err) {
-                    $log.error(err.result.error.errors[0].message);
+                    $log.error(err);
                     $rootScope.isLoading = false;
-                    NotificationService.error(err.result.error.errors[0].message);
-                    $scope.$apply();
+                    NotificationService.error(err);
+                })['finally'](function () {
+                    $rootScope.isLoading = false;
                 });
             }
         }

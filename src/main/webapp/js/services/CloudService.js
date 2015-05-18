@@ -10,10 +10,14 @@ puzzle.factory('CloudService',
             gapi.client.load('puzzle', 'v1', function () {
                 $log.debug("Puzzle API loaded");
                 API.deferred.resolve();
+                isReady = true;
             }, rootApi);
         };
         return API = {
             init: function () {
+                if (isReady) {
+                    $log.debug('Gapi loaded');
+                }
                 API.deferred = $q.defer();
                 var script = document.createElement("script");
                 script.src = 'https://apis.google.com/js/client.js?onload=initGapi';

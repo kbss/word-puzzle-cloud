@@ -47,9 +47,9 @@ puzzle.controller('GameController',
                     }
                     API.clearSelection();
                     GameService.checkWord(request).then(function (resp) {
-                        $log.debug(resp.result.points);
-                        var points = resp.result.points;
-                        var word = resp.result.word;
+                        $log.debug(resp.points);
+                        var points = resp.points;
+                        var word = resp.word;
                         var allPassed = true;
                         for (var i = 0; i < $scope.words.length; i++) {
                             if ($scope.words[i].text == word) {
@@ -73,13 +73,13 @@ puzzle.controller('GameController',
                             $scope.board[points[i].x][points[i].y].passed = true;
                         }
 
-                        $scope.$apply();
+
                     }, function (err) {
                         API.clearSelection();
                         $scope.selected[$scope.selected.length] = $scope.board[x][y];
                         $scope.board[x][y].selected = true;
-                        $log.error(err.result.error.errors[0].message)
-                        $scope.$apply();
+                        $log.error(err)
+                        
                     });
                 }
             }, startGame: function () {
@@ -105,7 +105,7 @@ puzzle.controller('GameController',
             }, navigateToScore: function () {
                 $log.debug('Redirecting to score page')
                 $location.path('score/');
-                $scope.$apply();
+               
             }
         }
 
@@ -123,9 +123,9 @@ puzzle.controller('GameController',
                 $rootScope.isLoading = false;
                 API.navigateToScore();
             }, function (err) {
-                $log.error(err.result.error.errors[0].message);
+                $log.error(err);
                 $rootScope.isLoading = false;
-                NotificationService.error(err.result.error.errors[0].message);
+                NotificationService.error(err);
                 API.navigateToScore();
             });
         }
