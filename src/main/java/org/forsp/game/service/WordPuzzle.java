@@ -50,7 +50,7 @@ public class WordPuzzle {
         }
         dim = size;
 
-        if (dim < 4) {
+        if (dim < 2) {
             throw new PuzzleException("Minimum board size is 4");
         }
         int length = puzzle.length();

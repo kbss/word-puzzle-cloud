@@ -27,9 +27,7 @@
             </button>
         </div>
     </div>
-
     <div id="game-selector" class="fadein fadeout margin-top-10" ng-show="menu.list">
-
         <table class="game-item-container">
             <tr ng-repeat="game in games" class="row game-item anim" ng-click="showGame(game.id)">
                 <td>{{game.name}}</td>
@@ -41,13 +39,10 @@
             <div>Games not found, got to editor and add new one</div>
         </a>
         </div>
-
-
         <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
             <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span><span class="icon-fix">Back</span>
         </button>
     </div>
-
     <div id="game-score" ng-show="menu.score">
         <div class="back-section">
             <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
@@ -56,7 +51,6 @@
             </button>
         </div>
     </div>
-
     <div id="game-info" ng-show="menu.info">
         <div class="game-info row">
             <h1>Game based on Google Engine API and angularJS</h1>
@@ -94,5 +88,4 @@
             </button>
         </div>
     </div>
-
 </div>

@@ -14,7 +14,6 @@
                 <span>{{word.text}}</span>
             </span>
         </div>
-
     </div>
     <div class="fadein fadeout" ng-show="showScore">
         <form role="form" class="score-form" name="scoreForm" ng-submit="submitScore(scoreForm)">
@@ -25,7 +24,6 @@
                 <span class="input-group-addon" id="playerName">Name</span>
                 <input type="text" class="form-control player-name" placeholder="Enter Your Name"
                        aria-describedby="playerName" name="playerName" required ng-model="result.playerName">
-
             </div>
             <div class="error fadein fadeout anim block-error" ng-show="scoreForm.playerName.$invalid">Name is
                 required
@@ -37,7 +35,6 @@
             </div>
         </form>
     </div>
-
     <div class="back-section row">
         <a href="/">
             <button type="button" class="btn btn-standard col-xs-12">

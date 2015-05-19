@@ -3,6 +3,7 @@ package org.forsp.game.domain.test;
 import org.forsp.game.domain.Point;
 import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
+import org.forsp.game.exceptions.WordNotFoundException;
 import org.forsp.game.service.WordPuzzle;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class WordPuzzleTest {
         Assert.assertEquals(result.getPoints().size(), word.length());
     }
 
-    @Test(expected = PuzzleException.class)
+    @Test(expected = WordNotFoundException.class)
     public void nonExistingWordTest() throws PuzzleException {
         List<String> words = new ArrayList<>();
         words.add("CARROT");

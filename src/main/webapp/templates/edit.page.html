@@ -1,12 +1,9 @@
 <div class="game-container full-width margin-top-5">
     <div id="game-list" class="fadein fadeout anim" ng-show="gameList && !isLoading">
-
         <h1 class="anim">Game editor</h1>
 
         <div ng-repeat="game in games" class="row">
-
             <div class="col-xs-7"> {{game.name}}</div>
-
             <div class="col-xs-3">
                 <button type="button" class="btn btn-standard menu-item"
                         data-ng-click="$parent.edit(game.id)" title="Edit Game">
@@ -16,9 +13,7 @@
                         data-ng-click="$parent.confirmDeletion(game.id)" title="Delete Game">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
-
             </div>
-
         </div>
         <button type="button" class="btn btn-standard menu-item" ng-click="addNewGame()"
                 title="Add new game">
@@ -87,7 +82,6 @@
         </table>
     </div>
 </div>
-
 <div class="modal fade" id="deleteConfirm">
     <div class="modal-dialog">
         <div class="modal-content">
