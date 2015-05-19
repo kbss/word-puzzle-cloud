@@ -18,7 +18,7 @@ puzzle.controller('GameEditController',
             },
             saveGame: function () {
                 $log.debug($scope.game);
-
+                $rootScope.isLoading = true;
                 GameService.addGame($scope.game).then(function (resp) {
                     $log.debug(resp.items);
                     API.getGames();
@@ -26,18 +26,20 @@ puzzle.controller('GameEditController',
                     $scope.gameEdit = false;
                 }, function (err) {
                     $log.error(err);
-                    $rootScope.isLoading = false;
                     NotificationService.error(err);
-
+                })['finally'](function () {
+                    $rootScope.isLoading = false;
                 });
             },
             deleteGame: function () {
+                $rootScope.isLoading = true;
                 GameService.deleteGame({'id': $scope.game.id}).then(function (resp) {
                     $log.debug(resp);
                     API.getGames();
                 }, function (err) {
-                    $rootScope.isLoading = false;
                     $log.error(err);
+                })['finally'](function () {
+                    $rootScope.isLoading = false;
                 });
             },
             getGames: function () {
@@ -53,7 +55,6 @@ puzzle.controller('GameEditController',
                     $rootScope.isLoading = false;
                 }, function (err) {
                     $log.error('Err:' + err);
-                    $rootScope.isLoading = false;
                 })['finally'](function () {
                     $rootScope.isLoading = false;
                 });
