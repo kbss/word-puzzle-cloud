@@ -1,7 +1,6 @@
 package org.forsp.game.exceptions;
 
 import com.google.api.server.spi.ServiceException;
-import com.google.api.server.spi.response.BadRequestException;
 
 /**
  * @author Serhii Kryvtsov

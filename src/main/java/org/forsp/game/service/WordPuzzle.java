@@ -5,9 +5,16 @@ import org.forsp.game.domain.Board;
 import org.forsp.game.domain.Point;
 import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * @author Serhii Kryvtsov
@@ -15,17 +22,16 @@ import java.util.logging.Logger;
  */
 public class WordPuzzle {
 
-    private final static Logger LOGGER = Logger.getLogger(WordPuzzle.class.getName());
-    private Board board;
-    private int dim;
-    private Set<String> words;
-
-    private Map<Character, Collection<Point>> charMap;
-    private Point[] SEARCH_DIRECTIONS = {
+    private final static Logger LOGGER = LoggerFactory.getLogger(WordPuzzle.class.getName());
+    private static final Point[] SEARCH_DIRECTIONS = {
             new Point(0, 1), new Point(0, -1), new Point(1, 0),
             new Point(1, 1), new Point(1, -1), new Point(-1, 0),
             new Point(-1, 1), new Point(-1, -1)
     };
+    private Board board;
+    private int dim;
+    private Set<String> words;
+    private Map<Character, Collection<Point>> charMap;
 
 
     public WordPuzzle(String puzzle, Collection<String> puzzleWords) throws PuzzleException {
@@ -37,7 +43,7 @@ public class WordPuzzle {
         }
         int size = (int) Math.sqrt(puzzle.length());
         if ((size * size) < puzzle.length()) {
-            LOGGER.warning("Invalid char sequence, board will be cutted");
+            LOGGER.warn("Invalid char sequence, board will be cutted");
         }
         dim = size;
 
@@ -50,7 +56,7 @@ public class WordPuzzle {
             throw new PuzzleException(String.format("Wrong char sequence, expected: %s chars but found: %s", cells, length));
         }
         if (length > cells) {
-            LOGGER.warning(String.format("Char sequence is bigger than board size (expected: %s, actual: %s), extra charters will be ignored", cells, length));
+            LOGGER.warn("Char sequence is bigger than board size (expected: {}, actual: {}), extra charters will be ignored", cells, length);
         }
         board = build(puzzle, dim);
         LOGGER.info(String.format("Board %sx%s \n%s", dim, dim, board));
@@ -118,7 +124,7 @@ public class WordPuzzle {
         char[][] puzzleBoard = board.getBoard();
         int x = startPos.getX();
         int y = startPos.getY();
-        Collection<Point> points = new ArrayList<Point>(wordLength);
+        Collection<Point> points = new ArrayList<>(wordLength);
         for (int i = 0; i < wordLength; i++) {
             if (!isValid(x, y)) {
                 return null;
@@ -131,20 +137,19 @@ public class WordPuzzle {
             points.add(new Point(x, y));
             x = x + direction.getX();
             y = y + direction.getY();
-
         }
         return points;
     }
 
     private void fillCharMap() {
-        charMap = new HashMap<Character, Collection<Point>>();
+        charMap = new HashMap<>();
         char[][] puzzleBoard = board.getBoard();
         for (int x = 0; x < puzzleBoard.length; x++) {
             for (int y = 0; y < puzzleBoard.length; y++) {
                 char c = puzzleBoard[x][y];
                 Collection<Point> chars = charMap.get(c);
                 if (chars == null) {
-                    chars = new ArrayList<Point>();
+                    chars = new ArrayList<>();
                     charMap.put(c, chars);
                 }
                 chars.add(new Point(x, y));

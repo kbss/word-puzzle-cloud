@@ -4,10 +4,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.Ref;
-import com.googlecode.objectify.cmd.QueryKeys;
 import org.apache.commons.lang3.StringUtils;
 import org.forsp.game.domain.Board;
 import org.forsp.game.domain.GameDto;
@@ -15,13 +12,17 @@ import org.forsp.game.domain.Point;
 import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
 import org.forsp.game.exceptions.PuzzleNotFoundException;
-import org.forsp.game.service.*;
+import org.forsp.game.service.WordPuzzle;
 import org.forsp.game.storage.entity.GameScore;
 import org.forsp.game.storage.entity.Puzzle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Word puzzle game API.
@@ -127,10 +128,10 @@ public class WordPuzzleGameApi {
             throw new PuzzleException("At least one word required");
         }
         game.setContent(game.getContent().toUpperCase());
-        Set<String> words = new HashSet<>();
-        for (String word : game.getWords()) {
-            words.add(word.toUpperCase());
-        }
+//        Set<String> words = new HashSet<>();
+//        for (String word : game.getWords()) {
+//            words.add(word.toUpperCase());
+//        }
         validateGame(game);
         //Async save
         ObjectifyService.ofy().save().entity(game);
