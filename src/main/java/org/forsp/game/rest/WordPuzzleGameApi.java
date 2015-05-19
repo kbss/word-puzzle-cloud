@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -132,26 +131,9 @@ public class WordPuzzleGameApi {
 //        for (String word : game.getWords()) {
 //            words.add(word.toUpperCase());
 //        }
-        validateGame(game);
+        new WordPuzzle(game.getContent(), game.getWords()).validateGame();
         //Async save
         ObjectifyService.ofy().save().entity(game);
-    }
-
-    private void validateGame(Puzzle game) throws PuzzleException {
-        WordPuzzle puzzle = new WordPuzzle(game.getContent(), game.getWords());
-        List<String> errorWords = new ArrayList<>(game.getWords().size());
-        for (String word : game.getWords()) {
-            if (StringUtils.isBlank(StringUtils.trimToEmpty(word))) {
-                throw new PuzzleException("Empty words not allowed");
-            }
-            Word result = puzzle.searchWord(word);
-            if (result == null) {
-                errorWords.add(word);
-            }
-        }
-        if (!errorWords.isEmpty()) {
-            throw new PuzzleException(String.format("Words not found in puzzle: %s", Arrays.toString(errorWords.toArray())));
-        }
     }
 
     private void validateRequest(Object game) throws PuzzleException {

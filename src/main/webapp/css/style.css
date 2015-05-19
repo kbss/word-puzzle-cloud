@@ -15,19 +15,20 @@ html, body, main, #content {
 
 .spinner-box {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
 }
 
 .spinner-text {
     position: relative;
-    right: 12px;
+    right: 26px;
     top: 20px;
+    font-size: 26px;
 }
 
 .spinner {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     background-color: #333;
 
     /*margin: 100px auto;*/
@@ -154,7 +155,10 @@ html, body, main, #content {
     color: red;
     font-size: 50px;
 }
-
+span.error{
+    color: red;
+    font-weight: bold;
+}
 .search-clear {
     /* position: absolute; */
     right: 55px;
@@ -220,7 +224,8 @@ html, body, main, #content {
 
 .btn-standard:hover {
 
-    background-color: #F7F7F7;
+    background-color: #eeeeea;
+    color: #48729b;
 
 }
 
@@ -313,10 +318,6 @@ span.icon-fix {
 
 .back-section {
     padding-top: 50px;
-}
-
-.leaderboard {
-    margin-top: -50px;
 }
 
 .margin-top-5 {

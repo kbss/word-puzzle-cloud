@@ -10,6 +10,7 @@ puzzle.controller('GameEditController',
         var gameMap;
         $scope.gameList = true;
         $scope.gameEdit = false;
+        $scope.board = [];
 
         var API = {
             init: function () {
@@ -99,6 +100,7 @@ puzzle.controller('GameEditController',
             }
 
             API.showEdit();
+            $scope.puzzleChanged();
         }
 
 
@@ -124,5 +126,36 @@ puzzle.controller('GameEditController',
             $log.debug('Removing word:' + index)
             $scope.game.words.splice(index, 1);
         }
-    }]
-);
+
+        $scope.puzzleChanged = function () {
+
+            if (!$scope.game.content) {
+                $scope.board = [];
+                return;
+            }
+            var size = Math.round(Math.sqrt($scope.game.content.length));
+            if (size < 2) {
+                $scope.board = [];
+                return;
+            }
+            var content = $scope.game.content.split('');
+            $log.debug(size);
+            $scope.board = [];
+            var charIndex = 0;
+            for (var i = 0; i < size; i++) {
+                if ($scope.board[i] == null) {
+                    $scope.board[i] = [];
+                }
+                //$scope.board[0][i];
+                for (var j = 0; j < size; j++) {
+                    $scope.board[i][j] = content[charIndex++];
+                }
+            }
+            $log.debug($scope.board);
+
+
+        }
+    }
+    ]
+)
+;

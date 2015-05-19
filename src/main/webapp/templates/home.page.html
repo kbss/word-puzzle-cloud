@@ -1,29 +1,29 @@
 <div class="game-container full-width">
     <div id="game-start-menu" class="full-width fadein fadeout margin-top-10" ng-show="menu.start">
         <div class="row">
-            <button type="button" class="btn btn-standard col-xs-12 menu-item" ng-click="selectGame()">
-                Start Game
+            <button type="button" class="btn btn-standard col-xs-12 menu-item anim" ng-click="selectGame()">
+                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Start game
             </button>
         </div>
         <a href="/score">
             <div class="row">
-                <button type="button" class="btn btn-standard col-xs-12">
-                    Leaderboard
+                <button type="button" class="btn btn-standard col-xs-12 anim">
+                    <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Score
                 </button>
             </div>
         </a>
         <a href="/edit">
             <div class="row">
-                <button type="button" class="btn btn-standard col-xs-12" ng-click="showScore()">
-                    Editor
+                <button type="button" class="btn btn-standard col-xs-12 anim" ng-click="showScore()">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editor
                 </button>
             </div>
         </a>
 
 
         <div class="row">
-            <button type="button" class="btn btn-standard col-xs-12" ng-click="showInfo()">
-                Info
+            <button type="button" class="btn btn-standard col-xs-12 anim" ng-click="showInfo()">
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Info
             </button>
         </div>
     </div>
@@ -36,6 +36,11 @@
                 <td>{{game.board.length}} x {{game.board.length}}</td>
             </tr>
         </table>
+        <div class="row game-item anim" ng-show="games == null || games.length==0 "><a
+                href="/edit">
+            <div>Games not found, got to editor and add new one</div>
+        </a>
+        </div>
 
 
         <button type="button" class="btn btn-standard col-xs-12" ng-click="showMenu()">
@@ -54,9 +59,9 @@
 
     <div id="game-info" ng-show="menu.info">
         <div class="game-info row">
-            <h2>Game based on Google Engine API and angularJS</h2>
+            <h1>Game based on Google Engine API and angularJS</h1>
 
-            <h3>Stack:</h3>
+            <h2>Stack:</h2>
             <ul>
                 <li>
                     <a href="https://cloud.google.com/appengine/docs">Google Engine API</a>

@@ -5,13 +5,16 @@ import org.forsp.game.domain.Board;
 import org.forsp.game.domain.Point;
 import org.forsp.game.domain.Word;
 import org.forsp.game.exceptions.PuzzleException;
+import org.forsp.game.exceptions.WordNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,8 +50,8 @@ public class WordPuzzle {
         }
         dim = size;
 
-        if (dim < 2) {
-            throw new PuzzleException("Minimum board size is 2");
+        if (dim < 4) {
+            throw new PuzzleException("Minimum board size is 4");
         }
         int length = puzzle.length();
         int cells = dim * dim;
@@ -63,6 +66,9 @@ public class WordPuzzle {
         fillCharMap();
         words = new HashSet<>(puzzleWords.size());
         for (String word : puzzleWords) {
+            if (StringUtils.trimToNull(word) == null) {
+                throw new PuzzleException("Empty words not allowed");
+            }
             words.add(word.toUpperCase());
         }
     }
@@ -74,6 +80,22 @@ public class WordPuzzle {
             System.arraycopy(chars, i * dim, board[i], 0, dim);
         }
         return new Board(board);
+    }
+
+    public void validateGame() throws PuzzleException {
+        List<String> errorWords = new ArrayList<>(words.size());
+        for (String word : words) {
+            if (StringUtils.isBlank(StringUtils.trimToEmpty(word))) {
+                throw new PuzzleException("Empty words not allowed");
+            }
+            Word result = searchWord(word);
+            if (result == null) {
+                errorWords.add(word);
+            }
+        }
+        if (!errorWords.isEmpty()) {
+            throw new WordNotFoundException(String.format("Words not found in puzzle: %s", Arrays.toString(errorWords.toArray())));
+        }
     }
 
     private int getDirection(int x1, int x2) {
@@ -184,7 +206,7 @@ public class WordPuzzle {
                 }
             }
         }
-        LOGGER.info(String.format("Word %s not found", word));
+        LOGGER.info("Word {} not found", word);
         return null;
     }
 

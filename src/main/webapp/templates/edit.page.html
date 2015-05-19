@@ -1,5 +1,7 @@
 <div class="game-container full-width margin-top-5">
-    <div id="game-list" class="fadein fadeout" ng-if="gameList && !isLoading">
+    <div id="game-list" class="fadein fadeout anim" ng-show="gameList && !isLoading">
+
+        <h1 class="anim">Game editor</h1>
 
         <div ng-repeat="game in games" class="row">
 
@@ -45,13 +47,14 @@
             <div class="form-group">
                 <label for="content">Puzzle:</label>
                 <input type="text" class="form-control" id="content" name="content" ng-model="game.content"
-                       ng-model-onblur required>
+                       ng-model-onblur required ng-change="puzzleChanged()">
             </div>
             <div class="error fadein fadeout anim" ng-show="editForm.content.$invalid">
                 Content is required
             </div>
             <div class="form-group">
                 <label>Words:</label>
+
                 <div ng-repeat="word in game.words track by $index" class="row">
                     <div class="col-xs-6" style="padding-left: 0px;">
                         <input type="text" class="form-control" ng-model="game.words[$index]">
@@ -72,6 +75,16 @@
             </button>
             <button type="submit" class="btn btn-standard" ng-click="showGameList()" title="Close">Close</button>
         </form>
+        <h3>Preview:</h3>
+        <table id="game-board">
+            <tr ng-repeat="row in board track by $index">
+                <td ng-repeat="cell in row track by $index" class="board-cell anim"
+                    ng-class="{'selected':cell.selected, 'passed':cell.passed}"
+                    data-ng-click="$parent.selectChar($parent.$index, $index)">
+                    <span ng-class="{'error':cell==null}" class="anim">{{cell==null?'?':cell}}</span>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 
